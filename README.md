@@ -79,23 +79,23 @@ trigger:
 
     # Event trigger endpoint
     # POST Payload:
-	# {
-	#     "tag": "<rule tag>",
-	#     "domain": "<domain name>",
-	#     "ipv4": [
-	#         "comma-separated list of ipv4 in response",
-	#     ],
-	#     "ipv6": [
-	#         "comma-separated list of ipv6 in response",
-	#     ]
-	# }
+    # {
+    #     "tag": "<rule tag>",
+    #     "domain": "<domain name>",
+    #     "ipv4": [
+    #         "comma-separated list of ipv4 in response",
+    #     ],
+    #     "ipv6": [
+    #         "comma-separated list of ipv6 in response",
+    #     ]
+    # }
     event_endpoint: https://api.example.com/v1/firewall/event
 
     # Lifecycle trigger endpoint
     # POST Payload:
-	# {
-	#     "state": "<lifecycle state>",
-	# }
+    # {
+    #     "state": "<lifecycle state>",
+    # }
     lifecycle_endpoint: https://api.example.com/v1/firewall/lifecycle
 ```
 
