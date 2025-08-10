@@ -1,0 +1,77 @@
+// dnsilly - dns automation utility
+// Copyright (C) 2025  bitrate16 (bitrate16@gmail.com)
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+package triggers
+
+import (
+	"bytes"
+	"dnsilly/config"
+	"dnsilly/rules"
+	"encoding/json"
+	"net/http"
+)
+
+type TriggerEventPayload struct {
+	Tag    string   `json:"tag"`
+	Domain string   `json:"domain"`
+	Ipv4   []string `json:"ipv4"`
+	Ipv6   []string `json:"ipv6"`
+}
+
+type TriggerLifecyclePayload struct {
+	State string `json:"state"`
+}
+
+func TriggerEventJSONHTTP(conf *config.Config, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
+	if conf.Trigger.JSONHTTP.EventEndpoint == "" {
+		return nil
+	}
+
+	payload := TriggerEventPayload{
+		Tag:    rule.Tag,
+		Domain: domain,
+		Ipv4:   ipv4,
+		Ipv6:   ipv6,
+	}
+	payloadBytes, _ := json.Marshal(payload)
+
+	_, err := http.Post(
+		conf.Trigger.JSONHTTP.EventEndpoint,
+		"application/json",
+		bytes.NewBuffer(payloadBytes),
+	)
+
+	return err
+}
+
+func TriggerLifecycleJSONHTTP(conf *config.Config, state string) error {
+	if conf.Trigger.JSONHTTP.LifecycleEndpoint == "" {
+		return nil
+	}
+
+	payload := TriggerLifecyclePayload{
+		State: state,
+	}
+	payloadBytes, _ := json.Marshal(payload)
+
+	_, err := http.Post(
+		conf.Trigger.JSONHTTP.LifecycleEndpoint,
+		"application/json",
+		bytes.NewBuffer(payloadBytes),
+	)
+
+	return err
+}
