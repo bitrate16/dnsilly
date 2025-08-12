@@ -121,7 +121,7 @@ func TriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerComma
 		return err
 	}
 
-	return partialTriggerEventCommand(conf, cmdConf, command, ipv4, "AAAA")
+	return partialTriggerEventCommand(conf, cmdConf, command, ipv6, "AAAA")
 }
 
 func TriggerLifecycleCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, state string) error {
