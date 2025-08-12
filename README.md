@@ -48,55 +48,57 @@ trigger:
 
   # Trigger to execute shell script
   command:
-    # Async mode, don't wait for execution
-    async: false
+    -
+      # Async mode, don't wait for execution
+      async: false
 
-    # Batch mode: concatenate ips in comma-separated string instead of calling script for each ip separately
-    batch: true
+      # Batch mode: concatenate ips in comma-separated string instead of calling script for each ip separately
+      batch: true
 
-    # Domain hit template:
-    # {tag} - your rule tag
-    # {domain} - matched domain name
-    # {type} - type of query: A or AAAA
-    # {ips} - comma-separated list in batch mode
-    # {ip} - single ip in non-batch mode
-    event_template: echo 'tag={tag} domain={domain} type={type} ips={ips} ip={ip}'
+      # Domain hit template:
+      # {tag} - your rule tag
+      # {domain} - matched domain name
+      # {type} - type of query: A or AAAA
+      # {ips} - comma-separated list in batch mode
+      # {ip} - single ip in non-batch mode
+      event_template: echo 'tag={tag} domain={domain} type={type} ips={ips} ip={ip}'
 
-    # Lifecycle trigger template:
-    # {state} - one of [start, stop, partial_start, partial_stop]
-    lifecycle_template: echo '{state}'
+      # Lifecycle trigger template:
+      # {state} - one of [start, stop, partial_start, partial_stop]
+      lifecycle_template: echo '{state}'
 
-    # Separate triggers
-    on_start: echo on_start
-    on_stop: echo on_stop
-    on_partial_start: echo on_partial_start
-    on_partial_stop: echo on_partial_stop
+      # Separate triggers
+      on_start: echo on_start
+      on_stop: echo on_stop
+      on_partial_start: echo on_partial_start
+      on_partial_stop: echo on_partial_stop
 
   # HTTP JSON request trigger
   json_http:
-    # Async mode, don't wait for execution
-    async: true
+    -
+      # Async mode, don't wait for execution
+      async: true
 
-    # Event trigger endpoint
-    # POST Payload:
-    # {
-    #     "tag": "<rule tag>",
-    #     "domain": "<domain name>",
-    #     "ipv4": [
-    #         "comma-separated list of ipv4 in response",
-    #     ],
-    #     "ipv6": [
-    #         "comma-separated list of ipv6 in response",
-    #     ]
-    # }
-    event_endpoint: https://api.example.com/v1/firewall/event
+      # Event trigger endpoint
+      # POST Payload:
+      # {
+      #     "tag": "<rule tag>",
+      #     "domain": "<domain name>",
+      #     "ipv4": [
+      #         "comma-separated list of ipv4 in response",
+      #     ],
+      #     "ipv6": [
+      #         "comma-separated list of ipv6 in response",
+      #     ]
+      # }
+      event_endpoint: https://api.example.com/v1/firewall/event
 
-    # Lifecycle trigger endpoint
-    # POST Payload:
-    # {
-    #     "state": "<lifecycle state>",
-    # }
-    lifecycle_endpoint: https://api.example.com/v1/firewall/lifecycle
+      # Lifecycle trigger endpoint
+      # POST Payload:
+      # {
+      #     "state": "<lifecycle state>",
+      # }
+      lifecycle_endpoint: https://api.example.com/v1/firewall/lifecycle
 ```
 
 And rules file:
@@ -134,9 +136,10 @@ upstreams:
 
 trigger:
   json_http:
-    # Async mode, don't wait for execution
-    async: true
-    event_endpoint: https://api.example.com/v1/firewall/event
+    -
+      # Async mode, don't wait for execution
+      async: true
+      event_endpoint: https://api.example.com/v1/firewall/event
 ```
 
 ## Log DNS queries to remote server
@@ -156,9 +159,10 @@ upstreams:
 
 trigger:
   command:
-    async: true
-    batch: false
-    event_template: echo 'ip route add {ip} dev {tag}'
+    -
+      async: true
+      batch: false
+      event_template: echo 'ip route add {ip} dev {tag}'
 ```
 
 

@@ -34,18 +34,22 @@ func defaultConfig() *Config {
 			},
 		},
 		Trigger: &ConfigTrigger{
-			Command: &ConfigTriggerCommand{
-				Batch:             false,
-				EventTemplate:     "echo 'tag={tag} domain={domain} type={type} ip={ip}'",
-				LifecycleTemplate: "echo '{state}'",
-				OnStart:           "echo on_start",
-				OnStop:            "echo on_stop",
-				OnPartialStart:    "echo on_partial_start",
-				OnPartialStop:     "echo on_partial_stop",
+			Command: []*ConfigTriggerCommand{
+				&ConfigTriggerCommand{
+					Batch:             false,
+					EventTemplate:     "echo 'tag={tag} domain={domain} type={type} ip={ip}'",
+					LifecycleTemplate: "echo '{state}'",
+					OnStart:           "echo on_start",
+					OnStop:            "echo on_stop",
+					OnPartialStart:    "echo on_partial_start",
+					OnPartialStop:     "echo on_partial_stop",
+				},
 			},
-			JSONHTTP: &ConfigTriggerJSONHTTP{
-				EventEndpoint:     "https://api.example.com/v1/firewall/event",
-				LifecycleEndpoint: "https://api.example.com/v1/firewall/lifecycle",
+			JSONHTTP: []*ConfigTriggerJSONHTTP{
+				&ConfigTriggerJSONHTTP{
+					EventEndpoint:     "https://api.example.com/v1/firewall/event",
+					LifecycleEndpoint: "https://api.example.com/v1/firewall/lifecycle",
+				},
 			},
 		},
 	}

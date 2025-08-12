@@ -54,7 +54,7 @@ func makeRegexp(matcher string) (*regexp.Regexp, error) {
 	matcher = strings.ReplaceAll(matcher, "*", ".*")
 	matcher = strings.ReplaceAll(matcher, "?", ".")
 
-	return regexp.Compile(matcher)
+	return regexp.Compile("^" + matcher + "$")
 }
 
 func ParseRules(configPath string) (*Rules, error) {

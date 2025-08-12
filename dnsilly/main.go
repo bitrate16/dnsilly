@@ -95,6 +95,8 @@ func main() {
 					onError <- struct{}{}
 				}
 			}()
+			// Trigger lifecycle
+			triggers.TriggerLifecycle(conf, triggers.OnStart)
 
 			// Periodically check for config updates
 		checkLoop:

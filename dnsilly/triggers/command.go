@@ -75,11 +75,11 @@ func executeForError(command string, verbose bool) error {
 	return nil
 }
 
-func partialTriggerEventCommang(conf *config.Config, command string, ips []string, proto string) error {
+func partialTriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, command string, ips []string, proto string) error {
 	if len(ips) != 0 {
 		subCommand := strings.ReplaceAll(command, "{type}", proto)
 
-		if conf.Trigger.Command.Batch {
+		if cmdConf.Batch {
 			subSubCommand := strings.ReplaceAll(subCommand, "{ips}", strings.Join(ips, ","))
 
 			// Execute
@@ -103,67 +103,67 @@ func partialTriggerEventCommang(conf *config.Config, command string, ips []strin
 	return nil
 }
 
-func TriggerEventCommand(conf *config.Config, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
+func TriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
 	if !hasShell {
 		return errors.New("shell not found")
 	}
 
-	if conf.Trigger.Command.EventTemplate == "" {
+	if cmdConf.EventTemplate == "" {
 		return nil
 	}
 
-	command := conf.Trigger.Command.EventTemplate
+	command := cmdConf.EventTemplate
 	command = strings.ReplaceAll(command, "{tag}", rule.Tag)
 	command = strings.ReplaceAll(command, "{domain}", domain)
 
-	err := partialTriggerEventCommang(conf, command, ipv4, "A")
+	err := partialTriggerEventCommand(conf, cmdConf, command, ipv4, "A")
 	if err != nil {
 		return err
 	}
 
-	return partialTriggerEventCommang(conf, command, ipv4, "AAAA")
+	return partialTriggerEventCommand(conf, cmdConf, command, ipv4, "AAAA")
 }
 
-func TriggerLifecycleCommand(conf *config.Config, state string) error {
+func TriggerLifecycleCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, state string) error {
 	if !hasShell {
 		return errors.New("shell not found")
 	}
 
 	// Execute distinct triggers
-	if (state == OnStart) && (conf.Trigger.Command.OnStart != "") {
-		err := executeForError(conf.Trigger.Command.OnStart, conf.Verbose)
+	if (state == OnStart) && (cmdConf.OnStart != "") {
+		err := executeForError(cmdConf.OnStart, conf.Verbose)
 		if err != nil {
 			return err
 		}
 	}
 
-	if (state == OnStop) && (conf.Trigger.Command.OnStop != "") {
-		err := executeForError(conf.Trigger.Command.OnStop, conf.Verbose)
+	if (state == OnStop) && (cmdConf.OnStop != "") {
+		err := executeForError(cmdConf.OnStop, conf.Verbose)
 		if err != nil {
 			return err
 		}
 	}
 
-	if (state == OnPartialStart) && (conf.Trigger.Command.OnPartialStart != "") {
-		err := executeForError(conf.Trigger.Command.OnPartialStart, conf.Verbose)
+	if (state == OnPartialStart) && (cmdConf.OnPartialStart != "") {
+		err := executeForError(cmdConf.OnPartialStart, conf.Verbose)
 		if err != nil {
 			return err
 		}
 	}
 
-	if (state == OnPartialStop) && (conf.Trigger.Command.OnPartialStop != "") {
-		err := executeForError(conf.Trigger.Command.OnPartialStop, conf.Verbose)
+	if (state == OnPartialStop) && (cmdConf.OnPartialStop != "") {
+		err := executeForError(cmdConf.OnPartialStop, conf.Verbose)
 		if err != nil {
 			return err
 		}
 	}
 
 	// Execute handler script
-	if conf.Trigger.Command.LifecycleTemplate == "" {
+	if cmdConf.LifecycleTemplate == "" {
 		return nil
 	}
 
-	command := conf.Trigger.Command.LifecycleTemplate
+	command := cmdConf.LifecycleTemplate
 	command = strings.ReplaceAll(command, "{state}", state)
 
 	return executeForError(command, conf.Verbose)

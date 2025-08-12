@@ -32,32 +32,32 @@ func TriggerEvent(conf *config.Config, rule *rules.Rule, domain string, ipv4 []s
 		return
 	}
 
-	if conf.Trigger.Command != nil {
-		if conf.Trigger.Command.Async {
+	for _, cmdConf := range conf.Trigger.Command {
+		if cmdConf.Async {
 			go func() {
-				err := TriggerEventCommand(conf, rule, domain, ipv4, ipv6)
+				err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6)
 				if err != nil {
 					fmt.Printf("[%s] Trigger event command error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerEventCommand(conf, rule, domain, ipv4, ipv6)
+			err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6)
 			if err != nil {
 				fmt.Printf("[%s] Trigger event command error: %v\n", util.Now(), err)
 			}
 		}
 	}
 
-	if conf.Trigger.JSONHTTP != nil {
-		if conf.Trigger.JSONHTTP.Async {
+	for _, jhConf := range conf.Trigger.JSONHTTP {
+		if jhConf.Async {
 			go func() {
-				err := TriggerEventJSONHTTP(conf, rule, domain, ipv4, ipv6)
+				err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6)
 				if err != nil {
 					fmt.Printf("[%s] Trigger event json http error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerEventJSONHTTP(conf, rule, domain, ipv4, ipv6)
+			err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6)
 			if err != nil {
 				fmt.Printf("[%s] Trigger event json http error: %v\n", util.Now(), err)
 			}
@@ -74,32 +74,32 @@ func TriggerLifecycle(conf *config.Config, state string) {
 		return
 	}
 
-	if conf.Trigger.Command != nil {
-		if conf.Trigger.Command.Async {
+	for _, cmdConf := range conf.Trigger.Command {
+		if cmdConf.Async {
 			go func() {
-				err := TriggerLifecycleCommand(conf, state)
+				err := TriggerLifecycleCommand(conf, cmdConf, state)
 				if err != nil {
 					fmt.Printf("[%s] Trigger lifecycle command error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerLifecycleCommand(conf, state)
+			err := TriggerLifecycleCommand(conf, cmdConf, state)
 			if err != nil {
 				fmt.Printf("[%s] Trigger lifecycle command error: %v\n", util.Now(), err)
 			}
 		}
 	}
 
-	if conf.Trigger.JSONHTTP != nil {
-		if conf.Trigger.JSONHTTP.Async {
+	for _, jhConf := range conf.Trigger.JSONHTTP {
+		if jhConf.Async {
 			go func() {
-				err := TriggerLifecycleJSONHTTP(conf, state)
+				err := TriggerLifecycleJSONHTTP(conf, jhConf, state)
 				if err != nil {
 					fmt.Printf("[%s] Trigger lifecycle json http error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerLifecycleJSONHTTP(conf, state)
+			err := TriggerLifecycleJSONHTTP(conf, jhConf, state)
 			if err != nil {
 				fmt.Printf("[%s] Trigger lifecycle json http error: %v\n", util.Now(), err)
 			}

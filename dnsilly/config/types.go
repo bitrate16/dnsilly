@@ -93,8 +93,8 @@ type ConfigTriggerJSONHTTP struct {
 
 // Trigger config
 type ConfigTrigger struct {
-	Command  *ConfigTriggerCommand  `yaml:"command"`
-	JSONHTTP *ConfigTriggerJSONHTTP `yaml:"json_http"`
+	Command  []*ConfigTriggerCommand  `yaml:"command"`
+	JSONHTTP []*ConfigTriggerJSONHTTP `yaml:"json_http"`
 }
 
 type Config struct {

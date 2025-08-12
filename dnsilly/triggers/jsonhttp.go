@@ -35,8 +35,8 @@ type TriggerLifecyclePayload struct {
 	State string `json:"state"`
 }
 
-func TriggerEventJSONHTTP(conf *config.Config, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
-	if conf.Trigger.JSONHTTP.EventEndpoint == "" {
+func TriggerEventJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJSONHTTP, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
+	if jhConf.EventEndpoint == "" {
 		return nil
 	}
 
@@ -49,16 +49,15 @@ func TriggerEventJSONHTTP(conf *config.Config, rule *rules.Rule, domain string, 
 	payloadBytes, _ := json.Marshal(payload)
 
 	_, err := http.Post(
-		conf.Trigger.JSONHTTP.EventEndpoint,
+		jhConf.EventEndpoint,
 		"application/json",
 		bytes.NewBuffer(payloadBytes),
 	)
-
 	return err
 }
 
-func TriggerLifecycleJSONHTTP(conf *config.Config, state string) error {
-	if conf.Trigger.JSONHTTP.LifecycleEndpoint == "" {
+func TriggerLifecycleJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJSONHTTP, state string) error {
+	if jhConf.LifecycleEndpoint == "" {
 		return nil
 	}
 
@@ -68,10 +67,9 @@ func TriggerLifecycleJSONHTTP(conf *config.Config, state string) error {
 	payloadBytes, _ := json.Marshal(payload)
 
 	_, err := http.Post(
-		conf.Trigger.JSONHTTP.LifecycleEndpoint,
+		jhConf.LifecycleEndpoint,
 		"application/json",
 		bytes.NewBuffer(payloadBytes),
 	)
-
 	return err
 }
