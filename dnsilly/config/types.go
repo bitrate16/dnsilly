@@ -41,6 +41,7 @@ type ConfigTriggerCommand struct {
 	// Accepts parameters:
 	// - {tag} - rule tag
 	// - {domain} - domain name
+	// - {client_ip} - client ip
 	// - {type} - DNS response type (A or AAAA)
 	// - {ips} - comma-separated list of ips from response if `batch=true`
 	// - {ip} - ip from response if `batch=false`
@@ -79,7 +80,8 @@ type ConfigTriggerJSONHTTP struct {
 	//     ],
 	//     "ipv6": [
 	//         "comma-separated list of ipv6 in response",
-	//     ]
+	//     ],
+	//     "client_ip": "Client IP Address"
 	// }
 	EventEndpoint string `yaml:"event_endpoint"`
 

@@ -21,39 +21,50 @@ import (
 	"dnsilly/config"
 	"dnsilly/rules"
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
 type TriggerEventPayload struct {
-	Tag    string   `json:"tag"`
-	Domain string   `json:"domain"`
-	Ipv4   []string `json:"ipv4"`
-	Ipv6   []string `json:"ipv6"`
+	Tag      string   `json:"tag"`
+	Domain   string   `json:"domain"`
+	Ipv4     []string `json:"ipv4"`
+	Ipv6     []string `json:"ipv6"`
+	ClientIP string   `json:"client_ip"`
 }
 
 type TriggerLifecyclePayload struct {
 	State string `json:"state"`
 }
 
-func TriggerEventJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJSONHTTP, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
+func TriggerEventJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJSONHTTP, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string, client_ip string) error {
 	if jhConf.EventEndpoint == "" {
 		return nil
 	}
 
 	payload := TriggerEventPayload{
-		Tag:    rule.Tag,
-		Domain: domain,
-		Ipv4:   ipv4,
-		Ipv6:   ipv6,
+		Tag:      rule.Tag,
+		Domain:   domain,
+		Ipv4:     ipv4,
+		Ipv6:     ipv6,
+		ClientIP: client_ip,
 	}
 	payloadBytes, _ := json.Marshal(payload)
 
-	_, err := http.Post(
+	resp, err := http.Post(
 		jhConf.EventEndpoint,
 		"application/json",
 		bytes.NewBuffer(payloadBytes),
 	)
-	return err
+
+	if err != nil {
+		return err
+	}
+
+	io.Copy(io.Discard, resp.Body)
+	resp.Body.Close()
+
+	return nil
 }
 
 func TriggerLifecycleJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJSONHTTP, state string) error {
@@ -66,10 +77,18 @@ func TriggerLifecycleJSONHTTP(conf *config.Config, jhConf *config.ConfigTriggerJ
 	}
 	payloadBytes, _ := json.Marshal(payload)
 
-	_, err := http.Post(
+	resp, err := http.Post(
 		jhConf.LifecycleEndpoint,
 		"application/json",
 		bytes.NewBuffer(payloadBytes),
 	)
-	return err
+
+	if err != nil {
+		return err
+	}
+
+	io.Copy(io.Discard, resp.Body)
+	resp.Body.Close()
+
+	return nil
 }

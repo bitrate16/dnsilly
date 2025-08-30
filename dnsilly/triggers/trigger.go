@@ -23,7 +23,7 @@ import (
 	"fmt"
 )
 
-func TriggerEvent(conf *config.Config, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) {
+func TriggerEvent(conf *config.Config, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string, client_ip string) {
 	if conf.Verbose {
 		fmt.Printf("[%s] Trigger event: domain=%s, rule=%s\n", util.Now(), domain, rule.Tag)
 	}
@@ -35,13 +35,13 @@ func TriggerEvent(conf *config.Config, rule *rules.Rule, domain string, ipv4 []s
 	for _, cmdConf := range conf.Trigger.Command {
 		if cmdConf.Async {
 			go func() {
-				err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6)
+				err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6, client_ip)
 				if err != nil {
 					fmt.Printf("[%s] Trigger event command error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6)
+			err := TriggerEventCommand(conf, cmdConf, rule, domain, ipv4, ipv6, client_ip)
 			if err != nil {
 				fmt.Printf("[%s] Trigger event command error: %v\n", util.Now(), err)
 			}
@@ -51,13 +51,13 @@ func TriggerEvent(conf *config.Config, rule *rules.Rule, domain string, ipv4 []s
 	for _, jhConf := range conf.Trigger.JSONHTTP {
 		if jhConf.Async {
 			go func() {
-				err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6)
+				err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6, client_ip)
 				if err != nil {
 					fmt.Printf("[%s] Trigger event json http error: %v\n", util.Now(), err)
 				}
 			}()
 		} else {
-			err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6)
+			err := TriggerEventJSONHTTP(conf, jhConf, rule, domain, ipv4, ipv6, client_ip)
 			if err != nil {
 				fmt.Printf("[%s] Trigger event json http error: %v\n", util.Now(), err)
 			}

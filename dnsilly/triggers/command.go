@@ -103,7 +103,7 @@ func partialTriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTrigg
 	return nil
 }
 
-func TriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string) error {
+func TriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerCommand, rule *rules.Rule, domain string, ipv4 []string, ipv6 []string, client_ip string) error {
 	if !hasShell {
 		return errors.New("shell not found")
 	}
@@ -115,6 +115,7 @@ func TriggerEventCommand(conf *config.Config, cmdConf *config.ConfigTriggerComma
 	command := cmdConf.EventTemplate
 	command = strings.ReplaceAll(command, "{tag}", rule.Tag)
 	command = strings.ReplaceAll(command, "{domain}", domain)
+	command = strings.ReplaceAll(command, "{client_ip}", client_ip)
 
 	err := partialTriggerEventCommand(conf, cmdConf, command, ipv4, "A")
 	if err != nil {

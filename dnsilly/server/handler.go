@@ -88,6 +88,11 @@ func (s *Server) proxyHandler(w dns.ResponseWriter, request *dns.Msg) bool {
 			continue
 		}
 
+		client_ip, _, err := net.SplitHostPort(w.RemoteAddr().String())
+		if err != nil {
+			client_ip = w.RemoteAddr().String()
+		}
+
 		answerGroups := makeAnswerGroups(upstreamResponse.Answer)
 
 		// Trigger triggers for matching domains
@@ -96,7 +101,7 @@ func (s *Server) proxyHandler(w dns.ResponseWriter, request *dns.Msg) bool {
 			// Check rule match
 			rule := s.rules.Match([]byte(domain))
 			if rule != nil {
-				triggers.TriggerEvent(s.config, rule, domain, ag.ipv4s, ag.ipv6s)
+				triggers.TriggerEvent(s.config, rule, domain, ag.ipv4s, ag.ipv6s, client_ip)
 			}
 		}
 

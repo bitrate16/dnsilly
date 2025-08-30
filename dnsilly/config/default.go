@@ -37,7 +37,7 @@ func defaultConfig() *Config {
 			Command: []*ConfigTriggerCommand{
 				&ConfigTriggerCommand{
 					Batch:             false,
-					EventTemplate:     "echo 'tag={tag} domain={domain} type={type} ip={ip}'",
+					EventTemplate:     "echo 'tag={tag} domain={domain} type={type} ip={ip} client_ip={client_ip}'",
 					LifecycleTemplate: "echo '{state}'",
 					OnStart:           "echo on_start",
 					OnStop:            "echo on_stop",
